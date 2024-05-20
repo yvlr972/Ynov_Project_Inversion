@@ -12,6 +12,8 @@ public class CarMovements : MonoBehaviour
     [SerializeField]
     private float _jumpForce;
     [SerializeField]
+    private float _gravityForce;
+    [SerializeField]
     private float _acceleration = 10;
     [SerializeField]
     private Rigidbody _rb;
@@ -22,6 +24,8 @@ public class CarMovements : MonoBehaviour
 
     private int _numberOfColliderUnder = 0;
 
+    private float _jumpTimer = 0.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +35,7 @@ public class CarMovements : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         float forwardDelta = _forwardSpeed * Time.deltaTime;
         float lateralDelta = _lateralSpeed * Time.deltaTime;
 
@@ -48,33 +53,51 @@ public class CarMovements : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
         {
             tempSpeed += transform.right * _lateralSpeed;
-            //_tiltAnim.setTiltRight();
+            _tiltAnim.setTiltRight();
         }
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             tempSpeed += -transform.right * _lateralSpeed;
-            //_tiltAnim.setTiltLeft();
+            _tiltAnim.setTiltLeft();
         }
 
         _rb.velocity = Vector3.Lerp(_rb.velocity, tempSpeed, _acceleration * Time.deltaTime);
 
         //Gravite
         if (_rb.velocity.y < -1)
-            _rb.AddForce(Physics.gravity * Time.deltaTime * 100);
+            _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
 
 
         //Mouvement de saut
-        else if (Input.GetKeyDown(KeyCode.Space) && /*isGrounded()*/ _numberOfColliderUnder > 0)
+        if (Input.GetKeyDown(KeyCode.Space) && /*isGrounded()*/ (_numberOfColliderUnder > 0))
         {
+            _jumpTimer = 0.0f;
+            _rb.AddForce(new Vector3(0, 30*_jumpForce, 0));
+        }
+        else if (Input.GetKey(KeyCode.Space) && (_jumpTimer < 0.2f))
+        {
+            _jumpTimer += Time.deltaTime;
             _rb.AddForce(new Vector3(0, _jumpForce, 0));
+        }
+        /*else if (Input.GetKeyUp(KeyCode.Space) && (_jumpTimer < 0.4f))
+        {
+            _jumpTimer += Time.deltaTime;
+            _rb.AddForce(new Vector3(0, _jumpForce, 0));
+        }*/
+        else if (Input.GetKeyUp(KeyCode.Space) && (_jumpTimer > 0.2f))
+        {
+            _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
+        }
+        else
+        {
+            _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
         }
 
 
-        /*if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
+        if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
         {
-            //_playerAnimator.SetTrigger("Run");
             _tiltAnim.setNormal();
-        }*/
+        }
 
     }
 
