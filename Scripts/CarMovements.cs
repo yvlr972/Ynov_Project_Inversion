@@ -77,18 +77,14 @@ public class CarMovements : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && /*isGrounded()*/ (_numberOfColliderUnder > 0))
         {
             _jumpTimer = 0.0f;
-            _rb.AddForce(new Vector3(0, 30*_jumpForce, 0));
+            _rb.AddForce(new Vector3(0, 30 * _jumpForce, 0));
+            _tiltAnim.setInclinedUp();
         }
         else if (Input.GetKey(KeyCode.Space) && (_jumpTimer < _jumpTime))
         {
             _jumpTimer += Time.deltaTime;
             _rb.AddForce(new Vector3(0, _jumpForce, 0));
         }
-        /*else if (Input.GetKeyUp(KeyCode.Space) && (_jumpTimer < 0.4f))
-        {
-            _jumpTimer += Time.deltaTime;
-            _rb.AddForce(new Vector3(0, _jumpForce, 0));
-        }*/
         else if (Input.GetKeyUp(KeyCode.Space) && (_jumpTimer > _jumpTime))
         {
             _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
@@ -102,20 +98,19 @@ public class CarMovements : MonoBehaviour
         {
             _tiltAnim.setNormal();
         }
-        Console.WriteLine(_numberOfColliderUnder);
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
         _numberOfColliderUnder++;
+        _tiltAnim.setHorizontal();
     }
 
 
     private void OnTriggerExit(Collider other)
     {
         _numberOfColliderUnder--;
-        _tiltAnim.setInclinedUp();
     }
 
 
