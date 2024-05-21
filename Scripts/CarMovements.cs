@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class CarMovements : MonoBehaviour
     private float _lateralSpeed;
     [SerializeField]
     private float _jumpForce;
+    [SerializeField]
+    private float _jumpTime = 0.1f;
     [SerializeField]
     private float _gravityForce;
     [SerializeField]
@@ -65,7 +68,9 @@ public class CarMovements : MonoBehaviour
 
         //Gravite
         if (_rb.velocity.y < -1)
+        {
             _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
+        }
 
 
         //Mouvement de saut
@@ -74,7 +79,7 @@ public class CarMovements : MonoBehaviour
             _jumpTimer = 0.0f;
             _rb.AddForce(new Vector3(0, 30*_jumpForce, 0));
         }
-        else if (Input.GetKey(KeyCode.Space) && (_jumpTimer < 0.2f))
+        else if (Input.GetKey(KeyCode.Space) && (_jumpTimer < _jumpTime))
         {
             _jumpTimer += Time.deltaTime;
             _rb.AddForce(new Vector3(0, _jumpForce, 0));
@@ -84,7 +89,7 @@ public class CarMovements : MonoBehaviour
             _jumpTimer += Time.deltaTime;
             _rb.AddForce(new Vector3(0, _jumpForce, 0));
         }*/
-        else if (Input.GetKeyUp(KeyCode.Space) && (_jumpTimer > 0.2f))
+        else if (Input.GetKeyUp(KeyCode.Space) && (_jumpTimer > _jumpTime))
         {
             _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
         }
@@ -93,25 +98,24 @@ public class CarMovements : MonoBehaviour
             _rb.AddForce(Physics.gravity * Time.deltaTime * _gravityForce);
         }
 
-
         if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
         {
             _tiltAnim.setNormal();
         }
-
+        Console.WriteLine(_numberOfColliderUnder);
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
         _numberOfColliderUnder++;
-
     }
 
 
     private void OnTriggerExit(Collider other)
     {
         _numberOfColliderUnder--;
+        _tiltAnim.setInclinedUp();
     }
 
 
