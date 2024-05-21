@@ -12,23 +12,25 @@ public class CarTiltAnimations : MonoBehaviour
 
         private float _timer = 0.0f;
 
-        public int IdPos;
+        public int IdPos = 0;
 
         Vector3 offset;
         private void Start()
         {
-            originTransform = transform;
+            //originTransform.rotation = transform.rotation;
         }
 
         // Update is called once per frame
         private void Update()
         {
             _timer += Time.deltaTime;
-            //LateralTiltSpeed *= Time.deltaTime;
-            //transform.position = Vector3.Lerp(transform.position, Pos[IdPos].position, LateralTiltSpeed);
-            //if ((transform.rotation.z < Pos[IdPos].rotation.z) || (transform.rotation.z > Pos[IdPos].rotation.z))
-                transform.rotation = Quaternion.Slerp(originTransform.rotation, Pos[IdPos].rotation, LateralTiltSpeed*Time.deltaTime);
-        }
+        //LateralTiltSpeed *= Time.deltaTime;
+        //transform.position = Vector3.Lerp(transform.position, Pos[IdPos].position, LateralTiltSpeed);
+        //if ((transform.rotation.z < Pos[IdPos].rotation.z) || (transform.rotation.z > Pos[IdPos].rotation.z))
+        //transform.rotation = Quaternion.Lerp(originTransform.rotation, Pos[IdPos].rotation, LateralTiltSpeed);
+
+            transform.rotation = transform.rotation * Quaternion.AngleAxis(Pos[IdPos].rotation.z * Time.deltaTime * LateralTiltSpeed, Vector3.forward);
+    }
 
         public void setNormal()
         {
