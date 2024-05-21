@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerTriggerBox : MonoBehaviour
 {
     public GameObject[] roadSections; // Tableau des préfabriqués de sections de route
-    private float roadLength = 200;
+    private float roadLength = 120;
     private bool hasSpawned = false; // Ajout d'un booléen pour vérifier si une nouvelle section de route a déjà été créée
     private GameObject lastRoadSection; // Référence à la dernière section de route créée
 
