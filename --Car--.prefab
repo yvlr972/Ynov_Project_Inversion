@@ -142,6 +142,7 @@ MonoBehaviour:
   _forwardSpeed: 30
   _lateralSpeed: 17
   _jumpForce: 30
+  _jumpTime: 0.1
   _gravityForce: 700
   _acceleration: 30
   _rb: {fileID: 4420606350396999242}
@@ -561,6 +562,7 @@ MonoBehaviour:
   - {fileID: 4407826699490596211}
   - {fileID: 1081499713852275706}
   LateralTiltSpeed: 0.05
+  forwardTiltSpeed: 0
   originTransform: {fileID: 0}
   IdPos: 0
 --- !u!4 &4325860368659768841 stripped

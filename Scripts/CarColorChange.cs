@@ -7,11 +7,33 @@ public class CarColorChange : MonoBehaviour
     public Color blackColor = Color.black; // Couleur noire
 
     private bool isWhite = true; // Variable pour suivre la couleur actuelle du joueur
-    private Rigidbody rb; // Référence au Rigidbody du joueur
+    private MeshRenderer[] carRenderers; // Références aux MeshRenderers de la voiture
+    private Color[] originalColors; // Couleurs originales des matériaux de la voiture
+    private PlayerDeath playerDeath; // Référence au script PlayerDeath
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>(); // Récupérer le Rigidbody du joueur
+        // Récupérer tous les MeshRenderers des enfants de la voiture
+        carRenderers = GetComponentsInChildren<MeshRenderer>();
+        if (carRenderers.Length == 0)
+        {
+            Debug.LogError("No MeshRenderers found on the car.");
+        }
+        else
+        {
+            // Mémoriser les couleurs originales des matériaux
+            originalColors = new Color[carRenderers.Length];
+            for (int i = 0; i < carRenderers.Length; i++)
+            {
+                originalColors[i] = carRenderers[i].material.color;
+            }
+
+            // Initialiser la voiture en blanc
+            ChangeColor();
+        }
+
+        // Récupérer la référence au script PlayerDeath
+        playerDeath = FindObjectOfType<PlayerDeath>();
     }
 
     private void Update()
@@ -27,22 +49,45 @@ public class CarColorChange : MonoBehaviour
     {
         isWhite = !isWhite; // Inverser la couleur actuelle
 
-        // Changer la couleur du joueur en fonction de la couleur actuelle
-        GetComponent<Renderer>().material.color = isWhite ? whiteColor : blackColor;
+        // Changer la couleur de tous les MeshRenderers de la voiture en fonction de la couleur actuelle
+        foreach (MeshRenderer renderer in carRenderers)
+        {
+            renderer.material.color = isWhite ? whiteColor : blackColor;
+        }
+
+        // Mettre à jour le tag du GameObject principal
+        gameObject.tag = isWhite ? "WhiteCar" : "BlackCar";
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Vérifier si la voiture est de la même couleur que l'obstacle
-        if (other.CompareTag("Obstacle"))
+        if (isWhite)
         {
-            Color obstacleColor = other.GetComponent<Renderer>().material.color;
-
-            if ((isWhite && obstacleColor == whiteColor) || (!isWhite && obstacleColor == blackColor))
+            // Si la voiture est blanche et touche un obstacle blanc, ignorer la collision
+            if (other.CompareTag("WhiteObstacle"))
             {
-                // Si la voiture est de la même couleur que l'obstacle, désactiver la collision avec l'obstacle
                 Physics.IgnoreCollision(other, GetComponent<Collider>());
+            }
+            // Si la voiture est blanche et touche un obstacle noir, le joueur meurt
+            else if (other.CompareTag("BlackObstacle"))
+            {
+                playerDeath.Die();
+            }
+        }
+        else // Si la voiture est noire
+        {
+            // Si la voiture est noire et touche un obstacle noir, ignorer la collision
+            if (other.CompareTag("BlackObstacle"))
+            {
+                Physics.IgnoreCollision(other, GetComponent<Collider>());
+            }
+            // Si la voiture est noire et touche un obstacle blanc, le joueur meurt
+            else if (other.CompareTag("WhiteObstacle"))
+            {
+                playerDeath.Die();
             }
         }
     }
+
 }
+

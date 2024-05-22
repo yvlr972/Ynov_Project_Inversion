@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4039391879700507973}
   m_Layer: 0
   m_Name: Quad
-  m_TagString: Obstacle
+  m_TagString: WhiteObstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -103,6 +103,6 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
